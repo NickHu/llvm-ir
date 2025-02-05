@@ -167,7 +167,7 @@ impl Module {
 }
 
 /// See [LLVM 14 docs on Global Variables](https://releases.llvm.org/14.0.0/docs/LangRef.html#global-variables)
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Clone, Debug, Hash)]
 pub struct GlobalVariable {
     pub name: Name,
     pub linkage: Linkage,
@@ -199,7 +199,7 @@ impl HasDebugLoc for GlobalVariable {
 }
 
 /// See [LLVM 14 docs on Global Aliases](https://releases.llvm.org/14.0.0/docs/LangRef.html#aliases)
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Clone, Debug, Hash)]
 pub struct GlobalAlias {
     pub name: Name,
     pub aliasee: ConstantRef,
@@ -219,7 +219,7 @@ impl Typed for GlobalAlias {
 }
 
 /// See [LLVM 14 docs on Global IFuncs](https://releases.llvm.org/14.0.0/docs/LangRef.html#ifuncs)
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Clone, Debug, Hash)]
 pub struct GlobalIFunc {
     pub name: Name,
     pub linkage: Linkage,
@@ -234,14 +234,14 @@ impl Typed for GlobalIFunc {
     }
 }
 
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum UnnamedAddr {
     Local,
     Global,
 }
 
 /// See [LLVM 14 docs on Linkage Types](https://releases.llvm.org/14.0.0/docs/LangRef.html#linkage)
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum Linkage {
     Private,
     Internal,
@@ -263,7 +263,7 @@ pub enum Linkage {
 }
 
 /// See [LLVM 14 docs on Visibility Styles](https://releases.llvm.org/14.0.0/docs/LangRef.html#visibility-styles)
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum Visibility {
     Default,
     Hidden,
@@ -271,7 +271,7 @@ pub enum Visibility {
 }
 
 /// See [LLVM 14 docs on DLL Storage Classes](https://releases.llvm.org/14.0.0/docs/LangRef.html#dllstorageclass)
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum DLLStorageClass {
     Default,
     Import,
@@ -279,7 +279,7 @@ pub enum DLLStorageClass {
 }
 
 /// See [LLVM 14 docs on Thread Local Storage Models](https://releases.llvm.org/14.0.0/docs/LangRef.html#thread-local-storage-models)
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum ThreadLocalMode {
     NotThreadLocal,
     GeneralDynamic,
@@ -292,7 +292,7 @@ pub enum ThreadLocalMode {
 pub type AddrSpace = u32;
 
 /// See [LLVM 14 docs on Attribute Groups](https://releases.llvm.org/14.0.0/docs/LangRef.html#attribute-groups)
-#[derive(PartialEq, Eq, Clone, Debug)]
+#[derive(PartialEq, Eq, Clone, Debug, Hash)]
 pub struct FunctionAttributeGroup {
     pub group_id: GroupID,
     pub attrs: Vec<FunctionAttribute>,
@@ -300,7 +300,7 @@ pub struct FunctionAttributeGroup {
 
 /* --TODO not yet implemented: metadata
 /// See [LLVM 14 docs on Named Metadata](https://releases.llvm.org/14.0.0/docs/LangRef.html#named-metadata)
-#[derive(PartialEq, Eq, Clone, Debug)]
+#[derive(PartialEq, Eq, Clone, Debug, Hash)]
 pub struct NamedMetadata {
     pub name: String,
     pub node_ids: Vec<MetadataNodeID>,
@@ -308,13 +308,13 @@ pub struct NamedMetadata {
 */
 
 /// See [LLVM 14 docs on Comdats](https://releases.llvm.org/14.0.0/docs/LangRef.html#langref-comdats)
-#[derive(PartialEq, Eq, Clone, Debug)]
+#[derive(PartialEq, Eq, Clone, Debug, Hash)]
 pub struct Comdat {
     pub name: String,
     pub selection_kind: SelectionKind,
 }
 
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum SelectionKind {
     Any,
     ExactMatch,
@@ -355,7 +355,7 @@ impl PartialEq for DataLayout {
 
 impl Eq for DataLayout {}
 
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum Endianness {
     /// Least-significant bits are stored in the lowest address location
     LittleEndian,
@@ -365,7 +365,7 @@ pub enum Endianness {
 
 /// Alignment details for a type.
 /// See [LLVM 14 docs on Data Layout](https://releases.llvm.org/14.0.0/docs/LangRef.html#data-layout)
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 pub struct Alignment {
     /// Minimum alignment (in bits) per the ABI
     pub abi: u32,
@@ -375,7 +375,7 @@ pub struct Alignment {
 
 /// Alignment details for function pointers.
 /// See [LLVM 14 docs on Data Layout](https://releases.llvm.org/14.0.0/docs/LangRef.html#data-layout)
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 pub struct FunctionPtrAlignment {
     /// If `true`, function pointer alignment is independent of function alignment.
     /// If `false`, function pointer alignment is a multiple of function alignment.
@@ -386,7 +386,7 @@ pub struct FunctionPtrAlignment {
 
 /// Layout details for pointers (other than function pointers).
 /// See [LLVM 14 docs on Data Layout](https://releases.llvm.org/14.0.0/docs/LangRef.html#data-layout)
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 pub struct PointerLayout {
     /// Size of a pointer in bits
     pub size: u32,
@@ -547,7 +547,7 @@ impl Alignments {
 }
 
 /// See [LLVM 14 docs on Data Layout](https://releases.llvm.org/14.0.0/docs/LangRef.html#data-layout)
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum Mangling {
     ELF,
     MIPS,
